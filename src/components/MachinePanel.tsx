@@ -8,7 +8,7 @@ const MACHINE_LABELS = ['Gen 1 (23.64 s)', 'Gen 2 (6.40 s)', 'Gen 3 (3.01 s)'];
 const MACHINE_SHORT  = ['G1', 'G2', 'G3'];
 
 function SmallChart({
-  data, dataKeys, colors, yLabel, refY, height = 160,
+  data, dataKeys, yLabel, refY, height = 160,
 }: {
   data: Record<string, number>[];
   dataKeys: { key: string; color: string; dash?: string }[];

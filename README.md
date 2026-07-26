@@ -98,6 +98,20 @@ Requires Node.js ≥ 18.
 
 ---
 
+## Reproducing the benchmark table (headless)
+
+The technical brief reports the six-method table at default settings
+(severity 1.5 pu, sigma = 0.5, 200 paths). To reproduce without a browser:
+
+```bash
+npx tsx scripts/run_benchmark_headless.ts
+```
+
+Same engine and settings as the Benchmark tab. Values are 200-path
+Monte Carlo estimates — expect run-to-run variation of roughly 1–2%.
+
+---
+
 ## Author
 
 Lander Van Passel — ORCID [0009-0000-1331-3127](https://orcid.org/0009-0000-1331-3127)
