@@ -110,6 +110,13 @@ npx tsx scripts/run_benchmark_headless.ts
 Same engine and settings as the Benchmark tab. Values are 200-path
 Monte Carlo estimates — expect run-to-run variation of roughly 1–2%.
 
+The 2003 replay uses seeded noise (xorshift), so its per-path stage
+statistics are exactly reproducible:
+
+```bash
+npx tsx scripts/run_event2003_headless.ts
+```
+
 ---
 
 ## Author

@@ -187,7 +187,7 @@ const FIRE_THRESH = BENCH.delta_thresh;
  * Run a single stochastic path for the given scenario.
  * Uses pre-generated noise array (Float32Array, length N×3) for reproducibility.
  */
-function runPath(
+export function runPath(
   scenario: Scenario,
   sigma: number,
   noise_flat: Float32Array,
