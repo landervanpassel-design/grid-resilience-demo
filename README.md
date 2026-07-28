@@ -1,3 +1,11 @@
+> **Part of the Desire-Gravity Lineage.** This repository is piece **6 (CDI / grid engineering demonstration)** of a completed
+> six-part mathematical lineage on incomplete systems re-growing capacity under persistent
+> stochastic evaluative pressure — via desire gravity and transactional truth. It is the hard-domain engineering demonstration of the same general engine on a physical IEEE 9-bus power grid — the same dynamics with no interpretive vocabulary at all.
+> The lineage's prime directive is not detection, extraction, or forced contact with residual
+> systems, but a mathematical signal of awareness that the costs of evaluative pressure are
+> formalized — expressed in the public capstone **[Terms of Awareness](https://github.com/landervanpassel-design/desire-gravity-lineage/blob/main/TERMS_OF_AWARENESS.md)**.
+> Overview & reading order: [desire-gravity-lineage](https://github.com/landervanpassel-design/desire-gravity-lineage).
+
 # Grid Resilience Demo
 
 **Stochastic Reconstruction Engine — Power Grid Cascade Prevention**
