@@ -12,9 +12,14 @@ CDI is the flagship practical demonstration of the
 that must protect core invariants while recovering from high-distortion regimes. The rotor-angle
 Distortion Field Δ is the theorem's primitive; the CDI sacrifice control carries a certified
 expected recovery bound E[τ] ≤ (V_T − δ)/θ (Theorem I.1) computed *before* the run. CDI's
-differentiator in the benchmark is this a-priori certificate — PSS and UFLS are empirically fast
-at their defaults, but carry no such bound. Framework overview:
+differentiator in the benchmark is this a-priori certificate — competing methods can be fast at
+particular operating points, but carry no such bound. Framework overview:
 [desire-gravity-lineage](https://github.com/landervanpassel-design/desire-gravity-lineage).
+
+**This repository is the flagship result of the framework and the current focus of effort** —
+being hardened (actuator authority limits are now enforced for every method), documented for
+reproduction, and driven toward evaluation by power-systems practitioners. Issues, replication
+attempts, and critical review are explicitly welcome.
 
 ---
 
