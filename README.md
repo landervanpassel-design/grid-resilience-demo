@@ -1,18 +1,20 @@
-> **Part of the Desire-Gravity Lineage.** This repository is piece **6 (CDI / grid engineering demonstration)** of a completed
-> six-part mathematical lineage on incomplete systems re-growing capacity under persistent
-> stochastic evaluative pressure — via desire gravity and transactional truth. It is the hard-domain engineering demonstration of the same general engine on a physical IEEE 9-bus power grid — the same dynamics with no interpretive vocabulary at all.
-> The lineage's prime directive is not detection, extraction, or forced contact with residual
-> systems, but a mathematical signal of awareness that the costs of evaluative pressure are
-> formalized — expressed in the public capstone **[Terms of Awareness](https://github.com/landervanpassel-design/desire-gravity-lineage/blob/main/TERMS_OF_AWARENESS.md)**.
-> Overview & reading order: [desire-gravity-lineage](https://github.com/landervanpassel-design/desire-gravity-lineage).
+# CDI Grid Resilience Demo — Certified Cascade Prevention on the IEEE 9-bus System
 
-# Grid Resilience Demo
-
-**Stochastic Reconstruction Engine — Power Grid Cascade Prevention**
-
-An interactive browser simulation benchmarking the Van Passel CDI (Controlled Distortion Injection) framework against standard power systems control methods on the IEEE 9-bus test system.
+**An interactive benchmark of Controlled Distortion Injection (CDI) — a control law with an
+a-priori certified recovery-time bound — against standard power-system controls (PSS, LQR,
+adaptive LQR, UFLS) on the Anderson & Fouad IEEE 9-bus test system.**
 
 **Live demo:** https://claude-version-check.replit.app
+
+CDI is the flagship practical demonstration of the
+[Reconstruction Theorem](https://github.com/landervanpassel-design/reconstruction-theorem)
+(DOI [10.5281/zenodo.21017251](https://doi.org/10.5281/zenodo.21017251)): a framework for systems
+that must protect core invariants while recovering from high-distortion regimes. The rotor-angle
+Distortion Field Δ is the theorem's primitive; the CDI sacrifice control carries a certified
+expected recovery bound E[τ] ≤ (V_T − δ)/θ (Theorem I.1) computed *before* the run. CDI's
+differentiator in the benchmark is this a-priori certificate — PSS and UFLS are empirically fast
+at their defaults, but carry no such bound. Framework overview:
+[desire-gravity-lineage](https://github.com/landervanpassel-design/desire-gravity-lineage).
 
 ---
 
@@ -56,7 +58,7 @@ Benchmark runs in four phases (0→100% progress):
 - **70–85%** Pillar II s* sweep (optimal sacrifice cost)
 - **85–100%** Pillar III adversarial (worst-case platform pull)
 
-**2003 Event** — synthetic replay of the August 14 2003 Northeast Blackout. 4 cascade scenarios × 30 stochastic paths. CDI prevents all 4 cascade stages; economic impact modelled via EPRI COLL methodology ($8B baseline).
+**2003 Event** — synthetic replay of the August 14 2003 Northeast Blackout. 4 cascade scenarios × 30 stochastic paths. per-path results: CDI alone recovers on 30/30 paths (its certificate is the differentiator), and CDI+UFLS blocks all 4 cascade stages on 30/30 paths; economic impact modelled via EPRI COLL methodology ($8B baseline).
 
 ---
 
