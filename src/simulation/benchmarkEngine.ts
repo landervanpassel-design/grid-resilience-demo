@@ -122,6 +122,20 @@ function buildGlobalLQR(): { K: Mat; P: Mat } {
 
 const M_PHI = 0.15, M_SIGMA = 0.05, C_SAC = 1.0;
 
+// Gap 4 — control authority bounding (applied uniformly to ALL methods):
+//   |u| ≤ U_SAT (pu)  and  |du/dt| ≤ U_RAMP (pu/s).
+// U_RAMP = 10 pu/s models fast exciter/FACTS-class actuation; governor-class
+// ramp rates are far slower, so results remain optimistic for governor-only
+// plants — but no method may any longer slew instantaneously.
+export const U_SAT = 20.0, U_RAMP = 10.0;
+
+/** Slew-rate limiter: move prev toward desired at ≤ U_RAMP pu/s. */
+function slewLimit(prev: number, desired: number, DT: number): number {
+  const d = Math.max(-U_SAT, Math.min(U_SAT, desired));
+  const maxStep = U_RAMP * DT;
+  return prev + Math.max(-maxStep, Math.min(maxStep, d - prev));
+}
+
 export const BENCH = {
   s_star: 2.0, delta_thresh: 0.5, K_pss: 8.0,
   adapt_interval: 50, adapt_iters: 80,
@@ -253,6 +267,7 @@ export function runBenchmark(
 
       let tau = T_SIM, rec = false, effort = 0;
       let K_ad = deepCopy(K_lqr), P_ad = deepCopy(P_global);
+      const uPrev = [0, 0, 0];   // Gap 4: per-machine actuator state for slew limiting
 
       for (let step = 1; step <= N; step++) {
         // Adaptive LQR re-linearisation
@@ -281,6 +296,10 @@ export function runBenchmark(
             const K_ufls = dist >= 0.60 ? 10.0 : dist >= 0.35 ? 6.0 : dist >= 0.15 ? 3.0 : 0;
             u = -K_ufls * w[i];
           }
+
+          // Gap 4: uniform saturation + slew-rate limit for every method
+          u = slewLimit(uPrev[i], u, DT);
+          uPrev[i] = u;
 
           effort += Math.abs(u) * DT;
           const adv = adversarial_alpha * Math.abs(w[i]);
@@ -340,7 +359,6 @@ export function runBenchmark(
     for (let k = 0; k < NP; k++) { cdf_t.push(tau_sort[k]); cdf_p.push((k + 1) / NP); }
 
     const isVP = m === 4;
-    const isUFLS = m === 5;
     return {
       name: meta.name, shortName: meta.short, color: meta.color, description: meta.desc,
       mean_delta, p10_delta, p90_delta, mean_delta_i, mean_omega_i,
@@ -378,12 +396,14 @@ export function runTightnessSweep(onProgress: (frac: number) => void): Tightness
       let tau_sum = 0, n_rec = 0;
       for (let p = 0; p < N_SW; p++) {
         let delta = [...d0], w = [...w0], tau = T_SIM;
+        const uPrev = [0, 0, 0];
         for (let step = 1; step <= N; step++) {
           const dist = distortion(delta, w);
           const nd = [...delta], nw = [...w];
           for (let i = 0; i < 3; i++) {
             const ai = WBASE / (2 * H[i]);
-            const u = dist >= BENCH.delta_thresh ? -BENCH.s_star * Math.sign(w[i]) * C_SAC : 0;
+            const uDes = dist >= BENCH.delta_thresh ? -BENCH.s_star * Math.sign(w[i]) * C_SAC : 0;
+            const u = slewLimit(uPrev[i], uDes, DT); uPrev[i] = u;
             const z = Math.sqrt(-2 * Math.log(Math.random() + 1e-12)) * Math.cos(2 * Math.PI * Math.random());
             nw[i] = w[i] + ai * (Pm[i] - Pe(delta, i) - D_dmp[i] * w[i] + u) * DT + sigma * SQ * z;
             nd[i] = delta[i] + w[i] * DT;
@@ -429,12 +449,14 @@ export function runPillarII(
 
     for (let p = 0; p < N_PII; p++) {
       let delta = [...d0], w = [...w0], tau = T_SIM, effort = 0;
+      const uPrev = [0, 0, 0];
       for (let step = 1; step <= N; step++) {
         const dist = distortion(delta, w);
         const nd = [...delta], nw = [...w];
         for (let i = 0; i < 3; i++) {
           const ai = WBASE / (2 * H[i]);
-          const u = dist >= BENCH.delta_thresh ? -s * Math.sign(w[i]) * C_SAC : 0;
+          const uDes = dist >= BENCH.delta_thresh ? -s * Math.sign(w[i]) * C_SAC : 0;
+          const u = slewLimit(uPrev[i], uDes, DT); uPrev[i] = u;
           effort += Math.abs(u) * DT;
           const z = Math.sqrt(-2 * Math.log(Math.random() + 1e-12)) * Math.cos(2 * Math.PI * Math.random());
           nw[i] = w[i] + ai * (Pm[i] - Pe(delta, i) - D_dmp[i] * w[i] + u) * DT + sigma * SQ * z;

@@ -26,7 +26,7 @@ Please read this before citing or sharing.
 - The Van Passel CDI framework and Theorem I.1 are presented as a theoretical proposal. The simulation is designed to explore the framework's behaviour under the stated model assumptions — it is not empirical validation against real grid infrastructure.
 - Physics parameters (machine inertia, damping, mechanical power) follow the Anderson & Fouad IEEE 9-bus benchmark exactly. The SDE formulation and CDI control law are the author's own.
 - The 2003 Northeast Blackout reconstruction is a stylised scenario — initial conditions and cascade thresholds are set to approximate the historical event's severity, not reconstructed from NERC fault records.
-- Gap 4 (control authority bounding / governor ramp rate caps) is **not yet implemented**. All results are therefore optimistic with respect to physical actuator limits.
+- Control authority is bounded (Gap 4, implemented): every method's actuation is saturated at |u| ≤ 20 pu and slew-rate limited at |du/dt| ≤ 10 pu/s (fast exciter/FACTS-class). Governor-class ramp rates are far slower, so results remain optimistic for governor-only plants — but no method slews instantaneously.
 - All conclusions are conditional on the stated model assumptions.
 
 ---
@@ -58,7 +58,9 @@ Benchmark runs in four phases (0→100% progress):
 - **70–85%** Pillar II s* sweep (optimal sacrifice cost)
 - **85–100%** Pillar III adversarial (worst-case platform pull)
 
-**2003 Event** — synthetic replay of the August 14 2003 Northeast Blackout. 4 cascade scenarios × 30 stochastic paths. per-path results: CDI alone recovers on 30/30 paths (its certificate is the differentiator), and CDI+UFLS blocks all 4 cascade stages on 30/30 paths; economic impact modelled via EPRI COLL methodology ($8B baseline).
+**2003 Event** — synthetic replay of the August 14 2003 Northeast Blackout. 4 cascade scenarios × 30 seeded stochastic paths (exactly reproducible via `scripts/run_event2003_headless.ts`). Per-path results **under actuator limits (Gap 4)**: the historical (no-control) scenario cascades on 30/30 paths with no recovery; CDI alone recovers on 30/30 paths (mean τ 0.265 s) though cascade stages still fire on 10–19 of 30 paths; UFLS alone and CDI+UFLS each block all 4 cascade stages on 30/30 paths and recover on 30/30 (mean τ 0.251 / 0.253 s). CDI's differentiator is the a-priori certificate, not stage suppression. Economic impact modelled via EPRI COLL methodology ($8B baseline).
+
+**Headline benchmark numbers under actuator limits** (severity 1.5, σ 0.5, 200 paths; unseeded Monte Carlo, ≲2% run-to-run drift — reproduce via `scripts/run_benchmark_headless.ts`): all five controlled methods recover 100% of paths; mean τ — CDI 0.36 s (certified bound E[τ] ≤ 3.53 s, comfortably satisfied), PSS 0.67 s, UFLS 0.70 s, ALQR 3.64 s, LQR 3.93 s. Under slew limits CDI's low-amplitude bang-bang (±2 pu) is penalized less than high-gain droop laws, making it both the fastest at these parameters *and* the only certified method — at other parameter settings PSS/UFLS can be faster; the certificate remains CDI's differentiator.
 
 ---
 
@@ -82,8 +84,7 @@ Benchmark runs in four phases (0→100% progress):
 
 | Gap | Status | Description |
 |-----|--------|-------------|
-| Gap 4 | ❌ Not implemented | Control authority bounding — governor ramp rate caps (du/dt limit). All current results are optimistic with respect to physical actuator constraints. |
-| `isUFLS` flag | ⚠️ Harmless | Declared but unused in `benchmarkEngine.ts`. Safe to clean up. |
+| Gap 4 | ✅ Implemented | Control authority bounding: uniform saturation \|u\| ≤ 20 pu and slew-rate limit \|du/dt\| ≤ 10 pu/s applied to **all** methods in the benchmark, event-replay, and interactive engines. Headline numbers below were re-derived headlessly after this change. Remaining caveat: 10 pu/s models fast exciter/FACTS-class actuation; governor-class rates are slower. |
 
 ---
 

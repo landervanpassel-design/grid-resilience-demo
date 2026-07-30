@@ -102,6 +102,9 @@ export function generateSDEPaths(params: SimParams, onProgress: (p: number) => v
       w2_path.push(w[1]);
     }
 
+    const uPrev = [0, 0, 0];   // Gap 4: per-machine actuator state for slew limiting
+    const U_RAMP = 10.0;       // pu/s — matches benchmarkEngine
+
     for (let step = 1; step <= N_steps; step++) {
       const ddelta = [0, 0, 0];
       const dw = [0, 0, 0];
@@ -120,6 +123,12 @@ export function generateSDEPaths(params: SimParams, onProgress: (p: number) => v
         let u_sac = 0;
         if (cur_delta_val >= params.delta_thresh && s_eff > 0) {
           u_sac = -s_eff * Math.sign(w[i]) * c_sac;
+        }
+        // Gap 4: slew-rate limit on the actuated control (not on the adversarial disturbance)
+        {
+          const maxStep = U_RAMP * dt;
+          u_sac = uPrev[i] + Math.max(-maxStep, Math.min(maxStep, u_sac - uPrev[i]));
+          uPrev[i] = u_sac;
         }
 
         // Adversarial drift

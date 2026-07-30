@@ -219,6 +219,8 @@ export function runPath(
   stage_injected[0] = true;
 
   let tau = T_SIM, rec = false, effort = 0;
+  const uPrev = [0, 0, 0];   // Gap 4: per-machine actuator state for slew limiting
+  const U_RAMP = 10.0;       // pu/s — matches benchmarkEngine
 
   for (let step = 1; step <= N; step++) {
     const t = step * DT;
@@ -255,6 +257,11 @@ export function runPath(
         u += -BENCH.s_star * Math.sign(w[i]) * C_SAC;
       }
       u = Math.max(-20, Math.min(20, u));
+
+      // Gap 4: slew-rate limit |du/dt| ≤ U_RAMP
+      const maxStep = U_RAMP * DT;
+      u = uPrev[i] + Math.max(-maxStep, Math.min(maxStep, u - uPrev[i]));
+      uPrev[i] = u;
 
       effort += Math.abs(u) * DT;
 
