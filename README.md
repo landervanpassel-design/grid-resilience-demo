@@ -4,7 +4,7 @@
 a-priori certified recovery-time bound — against standard power-system controls (PSS, LQR,
 adaptive LQR, UFLS) on the Anderson & Fouad IEEE 9-bus test system.**
 
-**Live demo:** https://claude-version-check.replit.app
+**Live demo:** https://landervanpassel-design.github.io/grid-resilience-demo/
 
 CDI is the flagship practical demonstration of the
 [Reconstruction Theorem](https://github.com/landervanpassel-design/reconstruction-theorem)
